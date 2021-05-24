@@ -34,7 +34,6 @@ namespace JOS.ContentSerializer.Internal
             context.Services.AddSingleton<IUrlHelper, UrlHelperAdapter>();
             context.Services.AddSingleton<IContentJsonSerializer, JsonContentSerializer>();
             context.Services.AddSingleton<IPropertyHandlerService, PropertyHandlerService>();
-            context.Services.AddSingleton<IContentSerializerSettings, ContentSerializerSettings>();
 
             context.Services.AddSingleton<IPropertyHandler<int>, IntPropertyHandler>();
             context.Services.AddSingleton<IPropertyHandler<bool>, BoolPropertyHandler>();

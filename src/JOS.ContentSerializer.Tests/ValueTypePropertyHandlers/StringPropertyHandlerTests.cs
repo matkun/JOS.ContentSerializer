@@ -24,6 +24,7 @@ namespace JOS.ContentSerializer.Tests.ValueTypePropertyHandlers
         [InlineData(null)]
         public void GivenStringProperty_WhenHandle_ThenReturnsCorrectValue(string heading)
         {
+            var contentSerializerSettings = new ContentSerializerSettings();
             var page = new StringPropertyHandlerPage
             {
                 Heading = heading
@@ -31,7 +32,8 @@ namespace JOS.ContentSerializer.Tests.ValueTypePropertyHandlers
 
             var result = this._sut.Handle(page.Heading,
                 page.GetType().GetProperty(nameof(StringPropertyHandlerPage.Heading)),
-                page);
+                page,
+                contentSerializerSettings);
 
             ((string)result).ShouldBe(heading);
         }
@@ -39,6 +41,7 @@ namespace JOS.ContentSerializer.Tests.ValueTypePropertyHandlers
         [Fact]
         public void GivenStringPropertyWithSelectOneAttribute_WhenHandle_ThenReturnsCorrectValue()
         {
+            var contentSerializerSettings = new ContentSerializerSettings();
             var page = new StringPropertyHandlerPage
             {
                 SelectOne = "option3"
@@ -46,7 +49,8 @@ namespace JOS.ContentSerializer.Tests.ValueTypePropertyHandlers
 
             var result = (List<SelectOption>)this._sut.Handle(page.SelectOne,
                 page.GetType().GetProperty(nameof(StringPropertyHandlerPage.SelectOne)),
-                page);
+                page,
+                contentSerializerSettings);
 
             result.ShouldContain(x => x.Selected && x.Value.Equals("option3") && x.Text.Equals("Option 3"));
             result.Count(x => x.Selected).ShouldBe(1);
@@ -57,6 +61,7 @@ namespace JOS.ContentSerializer.Tests.ValueTypePropertyHandlers
         [InlineData("")]
         public void GivenNullOrEmptyStringWithSelectOneAttribute_WhenGet_ThenReturnsCorrectValue(string selectOneValue)
         {
+            var contentSerializerSettings = new ContentSerializerSettings();
             var page = new StringPropertyHandlerPage
             {
                 SelectOne = selectOneValue
@@ -64,7 +69,8 @@ namespace JOS.ContentSerializer.Tests.ValueTypePropertyHandlers
 
             var result = (IEnumerable<SelectOption>)this._sut.Handle(page.SelectOne,
                 page.GetType().GetProperty(nameof(StringPropertyHandlerPage.SelectOne)),
-                page);
+                page,
+                contentSerializerSettings);
 
             result.Count(x => x.Selected).ShouldBe(0);
         }
@@ -72,6 +78,7 @@ namespace JOS.ContentSerializer.Tests.ValueTypePropertyHandlers
         [Fact]
         public void GivenStringPropertyWithSelectManyAttribute_WhenHandle_ThenReturnsCorrectValue()
         {
+            var contentSerializerSettings = new ContentSerializerSettings();
             var page = new StringPropertyHandlerPage
             {
                 SelectMany = "option3,option4,option5"
@@ -79,7 +86,8 @@ namespace JOS.ContentSerializer.Tests.ValueTypePropertyHandlers
 
             var result = (List<SelectOption>)this._sut.Handle(page.SelectMany,
                 page.GetType().GetProperty(nameof(StringPropertyHandlerPage.SelectMany)),
-                page);
+                page,
+                contentSerializerSettings);
 
             result.ShouldContain(x => x.Selected && x.Value.Equals("option3") && x.Text.Equals("Option 3"));
             result.ShouldContain(x => x.Selected && x.Value.Equals("option4") && x.Text.Equals("Option 4"));
@@ -92,6 +100,7 @@ namespace JOS.ContentSerializer.Tests.ValueTypePropertyHandlers
         [InlineData("")]
         public void GivenNullOrEmptyStringWithSelectManyAttribute_WhenGet_ThenReturnsCorrectValue(string selectManyValue)
         {
+            var contentSerializerSettings = new ContentSerializerSettings();
             var page = new StringPropertyHandlerPage
             {
                 SelectMany = selectManyValue
@@ -99,7 +108,8 @@ namespace JOS.ContentSerializer.Tests.ValueTypePropertyHandlers
 
             var result = (IEnumerable<SelectOption>)this._sut.Handle(page.SelectMany,
                 page.GetType().GetProperty(nameof(StringPropertyHandlerPage.SelectOne)),
-                page);
+                page,
+                contentSerializerSettings);
 
             result.Count(x => x.Selected).ShouldBe(0);
         }

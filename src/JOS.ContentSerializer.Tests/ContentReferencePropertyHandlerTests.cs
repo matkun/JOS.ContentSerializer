@@ -10,20 +10,18 @@ namespace JOS.ContentSerializer.Tests
     {
         private readonly ContentReferencePropertyHandler _sut;
         private readonly IUrlHelper _urlHelper;
-        private IContentSerializerSettings _contentSerializerSettings;
 
         public ContentReferencePropertyHandlerTests()
         {
-            this._contentSerializerSettings = Substitute.For<IContentSerializerSettings>();
-            this._contentSerializerSettings.UrlSettings = new UrlSettings();
             this._urlHelper = Substitute.For<IUrlHelper>();
-            this._sut = new ContentReferencePropertyHandler(this._urlHelper, this._contentSerializerSettings);
+            this._sut = new ContentReferencePropertyHandler(this._urlHelper);
         }
 
         [Fact]
         public void GivenNullContentReference_WhenHandle_ThenReturnsNull()
         {
-            var result = this._sut.Handle(null, null, null);
+            var contentSerializerSettings = new ContentSerializerSettings();
+            var result = this._sut.Handle(null, null, null, contentSerializerSettings);
 
             result.ShouldBeNull();
         }
@@ -31,7 +29,8 @@ namespace JOS.ContentSerializer.Tests
         [Fact]
         public void GivenEmptyContentReference_WhenHandle_ThenReturnsNull()
         {
-            var result = this._sut.Handle(ContentReference.EmptyReference, null, null);
+            var contentSerializerSettings = new ContentSerializerSettings();
+            var result = this._sut.Handle(ContentReference.EmptyReference, null, null, contentSerializerSettings);
 
             result.ShouldBeNull();
         }
@@ -39,15 +38,16 @@ namespace JOS.ContentSerializer.Tests
         [Fact]
         public void GivenContentReference_WhenHandle_ThenReturnsAbsoluteUrlString()
         {
+            var contentSerializerSettings = new ContentSerializerSettings();
             var host = "example.com";
             var scheme = "https://";
             var baseUrl = $"{scheme}{host}";
             var prettyPath = "/any-path/to/page/?anyQueryParam=value&anotherQuery";
             var contentReference = new ContentReference(1000);
-            this._urlHelper.ContentUrl(contentReference, this._contentSerializerSettings.UrlSettings)
+            this._urlHelper.ContentUrl(contentReference, contentSerializerSettings.UrlSettings)
                 .Returns($"{baseUrl}{prettyPath}");
 
-            var result = this._sut.Handle(contentReference, null, null);
+            var result = this._sut.Handle(contentReference, null, null, contentSerializerSettings);
 
             result.ShouldBe($"{baseUrl}{prettyPath}");
         }
@@ -55,16 +55,17 @@ namespace JOS.ContentSerializer.Tests
         [Fact]
         public void GivenContentReference_WhenHandleWithUseAbsoluteUrlsSetToFalse_ThenReturnsRelativeUrlString()
         {
+            var contentSerializerSettings = new ContentSerializerSettings();
             var host = "example.com";
             var scheme = "https://";
             var baseUrl = $"{scheme}{host}";
             var prettyPath = "/any-path/to/page/?anyQueryParam=value&anotherQuery";
             var contentReference = new ContentReference(1000);
-            this._contentSerializerSettings.UrlSettings.Returns(new UrlSettings { UseAbsoluteUrls = false });
-            this._urlHelper.ContentUrl(Arg.Any<ContentReference>(), this._contentSerializerSettings.UrlSettings)
+            contentSerializerSettings.UrlSettings.UseAbsoluteUrls = false;
+            this._urlHelper.ContentUrl(Arg.Any<ContentReference>(), contentSerializerSettings.UrlSettings)
                 .Returns($"{baseUrl}{prettyPath}");
 
-            var result = this._sut.Handle(contentReference, null, null);
+            var result = this._sut.Handle(contentReference, null, null, contentSerializerSettings);
 
             result.ShouldBe(prettyPath);
         }

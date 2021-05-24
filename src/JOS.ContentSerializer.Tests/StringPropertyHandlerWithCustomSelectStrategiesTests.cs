@@ -23,6 +23,7 @@ namespace JOS.ContentSerializer.Tests
         [Fact]
         public void GivenStringPropertyWithSelectOneAndSelectedOptionsOnly_WhenHandle_ThenReturnsCorrectValue()
         {
+            var contentSerializerSettings = new ContentSerializerSettings();
             var page = new StringPropertyHandlerPage
             {
                 SelectedOnlyOne = "option4"
@@ -30,7 +31,8 @@ namespace JOS.ContentSerializer.Tests
 
             var result = (SelectOption)this._sut.Handle(page.SelectedOnlyOne,
                 page.GetType().GetProperty(nameof(StringPropertyHandlerPage.SelectedOnlyOne)),
-                page);
+                page,
+                contentSerializerSettings);
 
             result.Selected.ShouldBeTrue();
             result.Text.ShouldBe("Option 4");
@@ -40,6 +42,7 @@ namespace JOS.ContentSerializer.Tests
         [Fact]
         public void GivenStringPropertyWithSelectOneAndSelectedOptionsOnly_ValueOnly_WhenHandle_ThenReturnsCorrectValue()
         {
+            var contentSerializerSettings = new ContentSerializerSettings();
             var page = new StringPropertyHandlerPage
             {
                 SelectedOnlyValueOnlyOne = "option5"
@@ -47,7 +50,8 @@ namespace JOS.ContentSerializer.Tests
 
             var result = (string)this._sut.Handle(page.SelectedOnlyValueOnlyOne,
                 page.GetType().GetProperty(nameof(StringPropertyHandlerPage.SelectedOnlyValueOnlyOne)),
-                page);
+                page,
+                contentSerializerSettings);
 
             result.ShouldBe("option5");
         }
@@ -55,6 +59,7 @@ namespace JOS.ContentSerializer.Tests
         [Fact]
         public void GivenStringPropertyWithSelectManyAndSelectedOptionsOnly_WhenHandle_ThenReturnsCorrectValue()
         {
+            var contentSerializerSettings = new ContentSerializerSettings();
             var page = new StringPropertyHandlerPage
             {
                 SelectedOnlyMany = "option5,option6,option7"
@@ -62,7 +67,8 @@ namespace JOS.ContentSerializer.Tests
 
             var result = ((IEnumerable<SelectOption>)this._sut.Handle(page.SelectedOnlyMany,
                 page.GetType().GetProperty(nameof(StringPropertyHandlerPage.SelectedOnlyMany)),
-                page)).ToList();
+                page,
+                contentSerializerSettings)).ToList();
 
             result.ShouldContain(x => x.Selected && x.Value.Equals("option5") && x.Text.Equals("Option 5"));
             result.ShouldContain(x => x.Selected && x.Value.Equals("option6") && x.Text.Equals("Option 6"));
@@ -74,6 +80,7 @@ namespace JOS.ContentSerializer.Tests
         [Fact]
         public void GivenStringPropertyWithSelectManyAndSelectedOptionsOnly_ValueOnly_WhenHandle_ThenReturnsCorrectValue()
         {
+            var contentSerializerSettings = new ContentSerializerSettings();
             var page = new StringPropertyHandlerPage
             {
                 SelectedOnlyValueOnlyMany = "option5,option6,option7"
@@ -81,7 +88,8 @@ namespace JOS.ContentSerializer.Tests
 
             var result = ((IEnumerable<string>)this._sut.Handle(page.SelectedOnlyValueOnlyMany,
                 page.GetType().GetProperty(nameof(StringPropertyHandlerPage.SelectedOnlyValueOnlyMany)),
-                page)).ToList();
+                page,
+                contentSerializerSettings)).ToList();
 
             result.ShouldContain(x => x == "option5");
             result.ShouldContain(x => x == "option6");

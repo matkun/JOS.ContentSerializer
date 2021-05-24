@@ -16,6 +16,7 @@ namespace JOS.ContentSerializer.Tests.ValueTypePropertyHandlers
         [Fact]
         public void GivenBoolProperty_WhenHandle_ThenReturnsCorrectValue()
         {
+            var contentSerializerSettings = new ContentSerializerSettings();
             var page = new ValueTypePropertyHandlerPage
             {
                 Bool = true
@@ -24,7 +25,8 @@ namespace JOS.ContentSerializer.Tests.ValueTypePropertyHandlers
             var result = (bool)this._sut.Handle(
                 page.Bool,
                 page.GetType().GetProperty(nameof(ValueTypePropertyHandlerPage.Bool)),
-                page);
+                page, 
+                contentSerializerSettings);
 
             result.ShouldBeTrue();
         }

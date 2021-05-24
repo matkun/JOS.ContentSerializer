@@ -15,20 +15,17 @@ namespace JOS.ContentSerializer.Tests
     {
         private readonly LinkItemCollectionPropertyHandler _sut;
         private readonly IUrlHelper _urlHelper;
-        private IContentSerializerSettings _contentSerializerSettings;
 
         public LinkItemCollectionPropertyHandlerTests()
         {
-            this._contentSerializerSettings = Substitute.For<IContentSerializerSettings>();
-            this._contentSerializerSettings.UrlSettings = new UrlSettings();
             this._urlHelper = Substitute.For<IUrlHelper>();
-            this._sut = new LinkItemCollectionPropertyHandler(this._urlHelper, this._contentSerializerSettings);
+            this._sut = new LinkItemCollectionPropertyHandler(this._urlHelper);
         }
 
         [Fact]
         public void GivenNullLinkItemCollection_WhenHandle_ThenReturnsNull()
         {
-            var result = this._sut.Handle(null, null, null);
+            var result = this._sut.Handle(null, null, null, null);
 
             result.ShouldBeNull();
         }
@@ -36,6 +33,7 @@ namespace JOS.ContentSerializer.Tests
         [Fact]
         public void GivenMailToLink_WhenHandle_ThenReturnsCorrectMailToLink()
         {
+            var contentSerializerSettings = new ContentSerializerSettings();
             var value = "mailto:mail@example.com";
             var linkItemCollection = new LinkItemCollection();
             linkItemCollection.Add(new EPiServer.SpecializedProperties.LinkItem
@@ -45,7 +43,7 @@ namespace JOS.ContentSerializer.Tests
                 Title = "any title"
             });
 
-            var result = ((IEnumerable<LinkItem>)this._sut.Handle(linkItemCollection, null, null)).ToList();
+            var result = ((IEnumerable<LinkItem>)this._sut.Handle(linkItemCollection, null, null, contentSerializerSettings)).ToList();
 
             result.Count.ShouldBe(1);
             result.ShouldContain(x => x.Href == value);
@@ -56,6 +54,7 @@ namespace JOS.ContentSerializer.Tests
         [Fact]
         public void GivenExternalLink_WhenHandle_ThenReturnsCorrectLink()
         {
+            var contentSerializerSettings = new ContentSerializerSettings();
             var value = "https://example.com/anypage?query=value";
             var linkItemCollection = new LinkItemCollection();
             linkItemCollection.Add(new EPiServer.SpecializedProperties.LinkItem
@@ -66,7 +65,7 @@ namespace JOS.ContentSerializer.Tests
                 Target = "_blank"
             });
 
-            var result = ((IEnumerable<LinkItem>)this._sut.Handle(linkItemCollection, null, null)).ToList();
+            var result = ((IEnumerable<LinkItem>)this._sut.Handle(linkItemCollection, null, null, contentSerializerSettings)).ToList();
 
             result.Count.ShouldBe(1);
             result.ShouldContain(x => x.Href == value);
@@ -78,6 +77,7 @@ namespace JOS.ContentSerializer.Tests
         [Fact]
         public void GivenInternalLink_WhenHandle_ThenReturnsCorrectAbsoluteLink()
         {
+            var contentSerializerSettings = new ContentSerializerSettings();
             var value = "random-internallink";
             var linkItemCollection = new LinkItemCollection();
             var expected = "https://example.com/my-pretty-url/?anyQuery=hej";
@@ -94,7 +94,7 @@ namespace JOS.ContentSerializer.Tests
             });
             linkItemCollection.Add(linkItem);
 
-            var result = ((IEnumerable<LinkItem>)this._sut.Handle(linkItemCollection, null, null)).ToList();
+            var result = ((IEnumerable<LinkItem>)this._sut.Handle(linkItemCollection, null, null, contentSerializerSettings)).ToList();
 
             result.Count.ShouldBe(1);
             result.ShouldContain(x => x.Href == expected);
@@ -109,8 +109,9 @@ namespace JOS.ContentSerializer.Tests
             var value = "random-internallink";
             var linkItemCollection = new LinkItemCollection();
             var expected = "/my-pretty-url/?anyQuery=hej";
-            this._contentSerializerSettings.UrlSettings.Returns(new UrlSettings { UseAbsoluteUrls = false });
-            this._urlHelper.ContentUrl(Arg.Any<Url>(), this._contentSerializerSettings.UrlSettings).Returns(expected);
+            var contentSerializerSettings = new ContentSerializerSettings();
+            contentSerializerSettings.UrlSettings.UseAbsoluteUrls = false;
+            this._urlHelper.ContentUrl(Arg.Any<Url>(), contentSerializerSettings.UrlSettings).Returns(expected);
             var linkItem = Substitute.For<EPiServer.SpecializedProperties.LinkItem>();
             linkItem.Href.Returns(value);
             linkItem.Text.Returns("any text");
@@ -122,7 +123,7 @@ namespace JOS.ContentSerializer.Tests
             });
             linkItemCollection.Add(linkItem);
 
-            var result = ((IEnumerable<LinkItem>)this._sut.Handle(linkItemCollection, null, null)).ToList();
+            var result = ((IEnumerable<LinkItem>)this._sut.Handle(linkItemCollection, null, null, contentSerializerSettings)).ToList();
 
             result.Count.ShouldBe(1);
             result.ShouldContain(x => x.Href == expected);

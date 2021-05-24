@@ -57,7 +57,7 @@ To add support for it, first create a new class that implements the ```IProperty
 ```csharp
 public class KeyValueItemListPropertyHandler : IPropertyHandler<IEnumerable<KeyValueItem>>
 {
-    public object Handle(IEnumerable<KeyValueItem> value, PropertyInfo property, IContentData contentData)
+    public object Handle(IEnumerable<KeyValueItem> value, PropertyInfo property, IContentData contentData, IContentSerializerSettings contentSerializerSettings)
     {
         // Do whatever you want with the property here.
         return value;
@@ -102,7 +102,7 @@ Just create a new propertyhandler for strings like this.
 ```csharp
 public class JosefStringPropertyHandler : IPropertyHandler<string>
 {
-    public object Handle(string value, PropertyInfo property, IContentData contentData)
+    public object Handle(string value, PropertyInfo property, IContentData contentData, IContentSerializerSettings contentSerializerSettings)
     {
         return "JOSEF OTTOSSON!!";
     }

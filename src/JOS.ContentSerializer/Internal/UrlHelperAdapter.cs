@@ -12,23 +12,20 @@ namespace JOS.ContentSerializer.Internal
         private readonly UrlHelper _urlHelper;
         private readonly ISiteDefinitionResolver _siteDefinitionResolver;
         private readonly IRequestHostResolver _requestHostResolver;
-        private readonly IContentSerializerSettings _contentSerializerSettings;
 
         public UrlHelperAdapter(
             UrlHelper urlHelper,
             ISiteDefinitionResolver siteDefinitionResolver,
-            IRequestHostResolver requestHostResolver,
-            IContentSerializerSettings contentSerializerSettings)
+            IRequestHostResolver requestHostResolver)
         {
             _requestHostResolver = requestHostResolver ?? throw new ArgumentNullException(nameof(requestHostResolver));
             _urlHelper = urlHelper ?? throw new ArgumentNullException(nameof(urlHelper));
             _siteDefinitionResolver = siteDefinitionResolver ?? throw new ArgumentNullException(nameof(siteDefinitionResolver));
-            _contentSerializerSettings = contentSerializerSettings ?? throw new ArgumentNullException(nameof(contentSerializerSettings));
         }
 
-        public string ContentUrl(Url url)
+        public string ContentUrl(Url url, IContentSerializerSettings contentSerializerSettings)
         {
-            return Execute(url, this._contentSerializerSettings.UrlSettings);
+            return Execute(url, contentSerializerSettings.UrlSettings);
         }
 
         public string ContentUrl(Url url, IUrlSettings urlSettings)
@@ -36,9 +33,9 @@ namespace JOS.ContentSerializer.Internal
             return Execute(url, urlSettings);
         }
 
-        public string ContentUrl(ContentReference contentReference)
+        public string ContentUrl(ContentReference contentReference, IContentSerializerSettings contentSerializerSettings)
         {
-            return Execute(contentReference, this._contentSerializerSettings.UrlSettings);
+            return Execute(contentReference, contentSerializerSettings.UrlSettings);
         }
 
         public string ContentUrl(ContentReference contentReference, IUrlSettings urlSettings)

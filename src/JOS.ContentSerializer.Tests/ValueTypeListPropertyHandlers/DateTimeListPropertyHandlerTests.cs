@@ -19,7 +19,7 @@ namespace JOS.ContentSerializer.Tests.ValueTypeListPropertyHandlers
         [Fact]
         public void GivenNullList_WhenHandle_ThenReturnsNull()
         {
-            var result = this._sut.Handle(null, null, null);
+            var result = this._sut.Handle(null, null, null, null);
 
             result.ShouldBeNull();
         }
@@ -27,7 +27,8 @@ namespace JOS.ContentSerializer.Tests.ValueTypeListPropertyHandlers
         [Fact]
         public void GivenEmptyList_WhenHandle_ThenReturnsSameList()
         {
-            var result = this._sut.Handle(Enumerable.Empty<DateTime>(), null, null);
+            var contentSerializerSettings = new ContentSerializerSettings();
+            var result = this._sut.Handle(Enumerable.Empty<DateTime>(), null, null, contentSerializerSettings);
 
             ((IEnumerable<DateTime>)result).ShouldBeEmpty();
         }
@@ -35,11 +36,12 @@ namespace JOS.ContentSerializer.Tests.ValueTypeListPropertyHandlers
         [Fact]
         public void GivenPopulatedList_WhenHandle_ThenReturnsSameList()
         {
+            var contentSerializerSettings = new ContentSerializerSettings();
             var year2000 = new DateTime(2000, 1, 20);
             var year3000 = new DateTime(3000, 1, 20);
             var items = new List<DateTime> { year2000, year3000};
 
-            var result = this._sut.Handle(items, null, null);
+            var result = this._sut.Handle(items, null, null, contentSerializerSettings);
 
             ((IEnumerable<DateTime>)result).ShouldContain(year2000);
             ((IEnumerable<DateTime>)result).ShouldContain(year3000);

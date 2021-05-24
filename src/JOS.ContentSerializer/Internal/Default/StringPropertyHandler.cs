@@ -16,7 +16,7 @@ namespace JOS.ContentSerializer.Internal.Default
             _selectManyStrategy = selectManyStrategy ?? throw new ArgumentNullException(nameof(selectManyStrategy));
         }
 
-        public object Handle(string stringValue, PropertyInfo property, IContentData contentData)
+        public object Handle(string stringValue, PropertyInfo property, IContentData contentData, IContentSerializerSettings contentSerializerSettings)
         {
             if (HasSelectAttribute(property))
             {

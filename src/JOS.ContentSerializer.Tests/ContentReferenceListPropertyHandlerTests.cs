@@ -12,20 +12,17 @@ namespace JOS.ContentSerializer.Tests
     {
         private readonly ContentReferenceListPropertyHandler _sut;
         private readonly IUrlHelper _urlHelper;
-        private IContentSerializerSettings _contentSerializerSettings;
 
         public ContentReferenceListPropertyHandlerTests()
         {
             this._urlHelper = Substitute.For<IUrlHelper>();
-            this._contentSerializerSettings = Substitute.For<IContentSerializerSettings>();
-            this._contentSerializerSettings.UrlSettings = new UrlSettings();
-            this._sut = new ContentReferenceListPropertyHandler(new ContentReferencePropertyHandler(this._urlHelper, this._contentSerializerSettings));
+            this._sut = new ContentReferenceListPropertyHandler(new ContentReferencePropertyHandler(this._urlHelper));
         }
 
         [Fact]
         public void GivenNullList_WhenHandle_ThenReturnsNull()
         {
-            var result = this._sut.Handle(null, null, null);
+            var result = this._sut.Handle(null, null, null, null);
 
             result.ShouldBeNull();
         }
@@ -33,9 +30,10 @@ namespace JOS.ContentSerializer.Tests
         [Fact]
         public void GivenEmptyList_WhenHandle_ThenReturnsEmptyList()
         {
+            var contentSerializerSettings = new ContentSerializerSettings();
             var contentReferences = Enumerable.Empty<ContentReference>();
 
-            var result = this._sut.Handle(contentReferences, null, null);
+            var result = this._sut.Handle(contentReferences, null, null, contentSerializerSettings);
 
             ((IEnumerable<object>)result).ShouldBeEmpty();
         }
@@ -43,6 +41,7 @@ namespace JOS.ContentSerializer.Tests
         [Fact]
         public void GivenContentReferences_WhenHandle_ThenReturnsEmptyList()
         {
+            var contentSerializerSettings = new ContentSerializerSettings();
             var host = "example.com";
             var scheme = "https://";
             var baseUrl = $"{scheme}{host}";
@@ -50,10 +49,10 @@ namespace JOS.ContentSerializer.Tests
             var contentReference = new ContentReference(1000);
             var contentReferences = new List<ContentReference>{contentReference};
 
-            this._urlHelper.ContentUrl(contentReference, this._contentSerializerSettings.UrlSettings)
+            this._urlHelper.ContentUrl(contentReference, contentSerializerSettings.UrlSettings)
                 .Returns($"{baseUrl}{prettyPath}");
 
-            var result = this._sut.Handle(contentReferences, null, null);
+            var result = this._sut.Handle(contentReferences, null, null, contentSerializerSettings);
             var items = ((IEnumerable<object>)result).Cast<string>().ToList();
 
             items.Count.ShouldBe(1);

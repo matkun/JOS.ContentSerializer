@@ -19,13 +19,13 @@ namespace JOS.ContentSerializer.Tests
             var contentLoader = Substitute.For<IContentLoader>();
             SetupContentLoader(contentLoader);
             var propertyManager = Substitute.For<IPropertyManager>();
-            this._sut = new ContentAreaPropertyHandler(contentLoader, propertyManager, new ContentSerializerSettings());
+            this._sut = new ContentAreaPropertyHandler(contentLoader, propertyManager);
         }
 
         [Fact]
         public void GivenNullContentArea_WhenHandle_ThenReturnsNull()
         {
-            var result = this._sut.Handle(null, null, null);
+            var result = this._sut.Handle(null, null, null, null);
 
             result.ShouldBeNull();
         }

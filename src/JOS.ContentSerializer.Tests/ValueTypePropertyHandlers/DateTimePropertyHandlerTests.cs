@@ -17,6 +17,7 @@ namespace JOS.ContentSerializer.Tests.ValueTypePropertyHandlers
         [Fact]
         public void GivenDateTimeProperty_WhenHandle_ThenReturnsCorrectValue()
         {
+            var contentSerializerSettings = new ContentSerializerSettings();
             var expected = new DateTime(2000, 01, 01, 12, 00, 30);
             var page = new ValueTypePropertyHandlerPage
             {
@@ -26,7 +27,8 @@ namespace JOS.ContentSerializer.Tests.ValueTypePropertyHandlers
             var result = (DateTime)this._sut.Handle(
                 page.DateTime,
                 page.GetType().GetProperty(nameof(ValueTypePropertyHandlerPage.DateTime)),
-                page);
+                page,
+                contentSerializerSettings);
 
             result.ShouldBe(expected);
         }

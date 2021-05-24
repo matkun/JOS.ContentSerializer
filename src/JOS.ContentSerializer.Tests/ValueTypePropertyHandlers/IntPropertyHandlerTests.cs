@@ -17,6 +17,7 @@ namespace JOS.ContentSerializer.Tests.ValueTypePropertyHandlers
         [Fact]
         public void GivenIntProperty_WhenHandle_ThenReturnsCorrectValue()
         {
+            var contentSerializerSettings = new ContentSerializerSettings();
             var page = new ValueTypePropertyHandlerPage
             {
                 Integer = 1000
@@ -25,7 +26,8 @@ namespace JOS.ContentSerializer.Tests.ValueTypePropertyHandlers
             var result = (int)this._sut.Handle(
                 page.Integer,
                 page.GetType().GetProperty(nameof(ValueTypePropertyHandlerPage.Integer)),
-                page);
+                page,
+                contentSerializerSettings);
 
             result.ShouldBe(1000);
         }

@@ -16,6 +16,7 @@ namespace JOS.ContentSerializer.Tests.ValueTypePropertyHandlers
         [Fact]
         public void GivenDoubleProperty_WhenHandle_ThenReturnsCorrectValue()
         {
+            var contentSerializerSettings = new ContentSerializerSettings();
             var page = new ValueTypePropertyHandlerPage
             {
                 Double = 10.50
@@ -24,7 +25,8 @@ namespace JOS.ContentSerializer.Tests.ValueTypePropertyHandlers
             var result = (double)this._sut.Handle(
                 page.Double,
                 page.GetType().GetProperty(nameof(ValueTypePropertyHandlerPage.Double)),
-                page);
+                page,
+                contentSerializerSettings);
 
             result.ShouldBe(10.50);
         }

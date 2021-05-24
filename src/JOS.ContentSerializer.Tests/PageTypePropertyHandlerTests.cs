@@ -17,7 +17,7 @@ namespace JOS.ContentSerializer.Tests
         [Fact]
         public void GivenNullPageType_WhenHandle_ThenReturnsNull()
         {
-            var result = this._sut.Handle(null, null, null);
+            var result = this._sut.Handle(null, null, null, null);
 
             result.ShouldBeNull();
         }
@@ -25,9 +25,10 @@ namespace JOS.ContentSerializer.Tests
         [Fact]
         public void GivenPageType_WhenHandle_ThenReturnsCorrectValue()
         {
+            var contentSerializerSettings = new ContentSerializerSettings();
             var pageType = new PageType {Name = "anytype"};
 
-            var result = this._sut.Handle(pageType, null, null);
+            var result = this._sut.Handle(pageType, null, null, contentSerializerSettings);
 
             ((PageTypeModel)result).Name.ShouldBe(pageType.Name);
         }

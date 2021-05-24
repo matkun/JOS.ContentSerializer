@@ -43,7 +43,7 @@ namespace JOS.ContentSerializer.Internal
                 {
                     var key = this._propertyNameStrategy.GetPropertyName(property);
                     var value = property.GetValue(contentData);
-                    var result = method.Invoke(propertyHandler, new[] { value, property, contentData });
+                    var result = method.Invoke(propertyHandler, new[] { value, property, contentData, settings });
                     structuredData.Add(key, result);
                 }
             }

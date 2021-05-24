@@ -18,7 +18,7 @@ namespace JOS.ContentSerializer.Tests.ValueTypeListPropertyHandlers
         [Fact]
         public void GivenNullList_WhenHandle_ThenReturnsNull()
         {
-            var result = this._sut.Handle(null, null, null);
+            var result = this._sut.Handle(null, null, null, null);
 
             result.ShouldBeNull();
         }
@@ -26,7 +26,8 @@ namespace JOS.ContentSerializer.Tests.ValueTypeListPropertyHandlers
         [Fact]
         public void GivenEmptyList_WhenHandle_ThenReturnsSameList()
         {
-            var result = this._sut.Handle(Enumerable.Empty<double>(), null, null);
+            var contentSerializerSettings = new ContentSerializerSettings();
+            var result = this._sut.Handle(Enumerable.Empty<double>(), null, null, contentSerializerSettings);
 
             ((IEnumerable<double>)result).ShouldBeEmpty();
         }
@@ -34,9 +35,10 @@ namespace JOS.ContentSerializer.Tests.ValueTypeListPropertyHandlers
         [Fact]
         public void GivenPopulatedList_WhenHandle_ThenReturnsSameList()
         {
+            var contentSerializerSettings = new ContentSerializerSettings();
             var items = new List<double> { 1000, 20.50 };
 
-            var result = this._sut.Handle(items, null, null);
+            var result = this._sut.Handle(items, null, null, contentSerializerSettings);
 
             ((IEnumerable<double>)result).ShouldContain(1000);
             ((IEnumerable<double>)result).ShouldContain(20.50);
